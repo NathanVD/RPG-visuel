@@ -16,11 +16,11 @@ import {Hero,Monstre} from "./modules/persos.js";
     let heroActions = document.getElementById("actionsB");
     let attack = document.getElementById("action3");
     let heal = document.getElementById("action4");
-    let monsterBg = document.getElementById("bg1");
+    let bgLeft = document.getElementById("bg1");
     let display1 = document.getElementById("display1");
     let statsBox1 = document.getElementById("statsBox1");
     let monsterStats = document.getElementById("monsterStats");
-    let heroBg = document.getElementById("bg2");
+    let bgRight = document.getElementById("bg2");
     let display2 = document.getElementById("display2");
     let statsBox2 = document.getElementById("statsBox2");
     let heroStats = document.getElementById("heroStats");
@@ -208,11 +208,11 @@ let ennemy = async (monstre) => {
 let play = () => {
     start.style.display = "none";
     setTimeout(() => {
-        monsterBg.style.background = "url(/public/img/anemos1.png)";
-        monsterBg.style.backgroundSize = "cover";
+        bgLeft.style.background = "url(/public/img/anemos1.png)";
+        bgLeft.style.backgroundSize = "cover";
         display1.innerHTML = '<img src="/public/img/fight.png" alt="fight" class="w-100" style="margin-bottom: 100px">';
-        heroBg.style.background = "url(/public/img/anemos2.png)";
-        heroBg.style.backgroundSize = "cover";
+        bgRight.style.background = "url(/public/img/anemos2.png)";
+        bgRight.style.backgroundSize = "cover";
         display2.innerHTML = '<img src="/public/img/fight.png" alt="fight" class="w-100" style="margin-bottom: 100px">';
         setTimeout( async () => {
             init = await ennemy(monster);
