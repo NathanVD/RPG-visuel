@@ -76,7 +76,7 @@ export class Monstre extends Personnage {
     attack(player,affichage,affichagePlayer,log){
         player.hp -= this.atk;
         log.innerHTML += `<br>${this.name} vous attaque.`;
-        affichage.innerHTML = '<img src="./public/img/Skull_Warrior.gif" alt="monster attack"  class="w-100"></img>';
+        affichage.style.filter= "invert(75%)";
         setTimeout(() => {
             affichage.style.marginLeft= "150px";
             affichagePlayer.style.filter= "saturate(1000%)";
@@ -84,7 +84,7 @@ export class Monstre extends Personnage {
                 affichage.style.marginLeft= "0";
                 setTimeout(() => {
                     affichagePlayer.style.filter= "saturate(100%)";
-                    affichage.innerHTML = '<img src="./public/img/Skeleton.gif" alt="monster"  class="w-100"></img>';
+                    affichage.style.filter= "invert(0%)";
                     setTimeout(() => {
                         log.innerHTML += ` Vous perdez ${this.atk}hp.`;
                     }, 400);

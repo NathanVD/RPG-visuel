@@ -8,6 +8,8 @@ import {Hero,Monstre} from "./modules/persos.js";
     //monstre
     let monster = new Monstre("Skeleton",30,5,10,'<img src="./public/img/Skeleton.gif" alt="skeleton"  class="w-100"></img>');
     //HTML
+    let start = document.getElementById("start");
+    let reset = document.getElementById("reset");
     // let chestActions = document.getElementById("actionsA");
     // let open = document.getElementById("action1");
     // let ignore = document.getElementById("action2");
@@ -27,126 +29,184 @@ import {Hero,Monstre} from "./modules/persos.js";
 
 // } VARIABLES
 
-function choice(action1,action2) {
+// FUNCTIONS {
+
+let choice = (action1,action2) => {
     return new Promise(resolve => {
-        action1.addEventListener("click", function(){resolve(1);});
-        action2.addEventListener("click", function(){resolve(2);});
+        action1.removeAttribute("disabled");
+        action2.removeAttribute("disabled");
+        action1.addEventListener("click", ()=>{
+            action1.setAttribute("disabled","disabled");
+            action2.setAttribute("disabled","disabled");
+            resolve(1);
+        });
+        action2.addEventListener("click", ()=>{
+            action1.setAttribute("disabled","disabled");
+            action2.setAttribute("disabled","disabled");
+            resolve(2);
+        });
     });
 }
 
-async function fight(monstre) {
-    while (monstre.hp > 0 && player.hp > 0){
-        console.log("test");
-        while (action != 1 && action != 2){
-            action = await choice(attack,heal);
-        }
-        attack.setAttribute("disabled","disabled");
-        heal.setAttribute("disabled","disabled");
-        if (init == "monstre") {
-            monstre.attack(player,display1,display2,logText);
-            if (player.hp > 0) {
-                if (action == 1){
-                    player.swordAttack(monstre,display2,display1,logText);
-                    log.scrollTop = log.scrollHeight;
-                }else if(action == 2){
-                    player.healingSpell(display2,logText);
-                    log.scrollTop = log.scrollHeight;
-                }
-            }
-        } else {
-            if (action == 1){
-                player.swordAttack(monstre,display2,display1,logText);
-                setTimeout(() => {
-                    log.scrollTop = log.scrollHeight;
-                    setTimeout(() => {
-                        log.scrollTop = log.scrollHeight;
-                        monsterStats.innerHTML = `${monstre.name} <br> <span class="red">♥</span> ${monstre.hp} &nbsp; | &nbsp; <span class="gold">⚔</span> ${monstre.atk}`;
-                    }, 501);
-                }, 501);
-            }else if(action == 2){
-                player.healingSpell(display2,logText);
-                setTimeout(() => {
-                    log.scrollTop = log.scrollHeight;
-                    setTimeout(() => {
-                        log.scrollTop = log.scrollHeight;
-                    }, 501);
-                }, 501);
-            }
-            setTimeout(() => {
-                if (monstre.hp > 0) {
-                    monstre.attack(player,display1,display2,logText);
-                    log.scrollTop = log.scrollHeight;
-                    setTimeout(() => {
-                        log.scrollTop = log.scrollHeight;
-                        heroStats.innerHTML = `${player.name} <br> <span class="red">♥</span> ${player.hp} / ${player.hpMax} &nbsp; | &nbsp; <span class="gold">⚔</span> ${player.atk}`;
-                    }, 1001);
-                }
-            }, 1500);
-        }
-        action = 0;
+let swordAttack = async (monstre) => {
+    return new Promise( resolve => {
+        player.swordAttack(monstre,display2,display1,logText);
+        log.scrollTop = log.scrollHeight;
         setTimeout(() => {
-            attack.removeAttribute("disabled");
-            heal.removeAttribute("disabled");
-        }, 3010);
-        console.log(player.hp);
-    } 
-    if(monstre.hp <= 0){
+            monsterStats.innerHTML = `${monstre.name} <br> <span class="red">♥</span> ${monstre.hp} &nbsp; | &nbsp; <span class="gold">⚔</span> ${monstre.atk}`;
+            setTimeout(() => {
+                log.scrollTop = log.scrollHeight;
+                setTimeout(() => {
+                    resolve();
+                }, 500);
+            }, 501);
+        }, 501);
+    });
+}
+
+let healSpell = async () => {
+    return new Promise( resolve => {
+        player.healingSpell(display2,logText);
+        log.scrollTop = log.scrollHeight;
+        setTimeout(() => {
+            heroStats.innerHTML = `${player.name} <br> <span class="red">♥</span> ${player.hp} / ${player.hpMax} &nbsp; | &nbsp; <span class="gold">⚔</span> ${player.atk}`;
+            setTimeout(() => {
+                log.scrollTop = log.scrollHeight;
+                setTimeout(() => {
+                    resolve();
+                }, 500);
+            }, 501);
+        }, 501);
+    });
+}
+
+let monsterAttack = async (monstre) => {
+    return new Promise( resolve => {
+        monstre.attack(player,display1,display2,logText);
+        log.scrollTop = log.scrollHeight;
+        setTimeout(() => {
+            heroStats.innerHTML = `${player.name} <br> <span class="red">♥</span> ${player.hp} / ${player.hpMax} &nbsp; | &nbsp; <span class="gold">⚔</span> ${player.atk}`;
+            setTimeout(() => {
+                log.scrollTop = log.scrollHeight;
+                setTimeout(() => {
+                    resolve();
+                }, 500);
+            }, 501);
+        }, 501);
+    });
+}
+
+let monsterDeath = async (monstre) => {
+    return new Promise( resolve => {
         display1.style.filter= "saturate(50%)";
         setTimeout(() => {
             statsBox1.style.display = "none";
+            display1.style.filter= "saturate(0)";
             logText.innerHTML += `<br>Vous avez vaincu ${monstre.name} !`
             log.scrollTop = log.scrollHeight;
-            display1.style.filter= "saturate(0)";
             setTimeout(() => {
                     display1.innerHTML = "";
-            }, 2000);
-        }, 1500);
-    } else if(player.hp <= 0) {
-        display2.innerHTML = '<img src="./public/img/Felix_lBlade_DownedBack.gif" alt="hero"  class="w-100">';
+                    logText.innerHTML += `<br>Combat terminé.`
+                    log.scrollTop = log.scrollHeight;
+                    resolve()
+            }, 1000);
+        }, 1000);
+    });
+}
+
+let playerDeath = async (monstre) => {
+    return new Promise( resolve => {
+        display2.innerHTML = '<img src="./public/img/Felix_lBlade_HitBack.gif" alt="hero"  class="w-100">';
         setTimeout(() => {
-            statsBox2.style.display = "none";
-            logText.innerHTML += `<br>Vous avez été défait par ${monstre.name} !`
-            log.scrollTop = log.scrollHeight;
+            display2.innerHTML = '<img src="./public/img/Felix_lBlade_DownedBack.gif" alt="hero"  class="w-100">';
             setTimeout(() => {
-                logText.innerHTML += `<br>Game Over !`
+                statsBox2.style.display = "none";
+                display2.innerHTML = '<img src="./public/img/Felix_lBlade_DownedBack.gif" alt="hero"  class="w-100">';
+                logText.innerHTML += `<br>Vous avez été défait par ${monstre.name} !`
                 log.scrollTop = log.scrollHeight;
-                //display2.innerHTML = "";
-            }, 2000);
-        }, 1500);
+                setTimeout(() => {
+                    logText.innerHTML += `<br>Game Over !`
+                    log.scrollTop = log.scrollHeight;
+                    resolve()
+                }, 1000);
+            }, 500);
+        }, 500);
+    });
+}
+
+let fight = async (monstre,init) => {
+
+    while (monstre.hp > 0 && player.hp > 0){
+
+        //Monstre agit en premier
+        if (init == "monstre") {
+            //Action Monstre
+            await monsterAttack(monstre);
+            //Action Joueur
+            if (player.hp > 0) {
+                //Choix action
+                action = await choice(attack,heal);
+                if (action == 1){
+                    await swordAttack(monstre);
+                }else if(action == 2){
+                    await healSpell(monstre);
+                }
+            }
+
+        //Joueur agit en premier
+        } else {
+            //Action Joueur
+            action = await choice(attack,heal);
+            if (action == 1){
+                await swordAttack(monstre);
+            }else if(action == 2){
+                await healSpell(monstre);
+            }
+            //Action Monstre
+            if (monstre.hp > 0) {
+                await monsterAttack(monstre);
+            }
+        }
+        action = 0;
+    } 
+    //Anim morts
+    if(monstre.hp <= 0){
+        await monsterDeath(monstre);
+    } else if(player.hp <= 0) {
+        await playerDeath(monstre);
     }
 }
 
-function ennemy(monstre) {
-    logText.innerHTML += `<br>Vous rencontrez un <span class="name">${monstre.name}</span> !`
-    display1.innerHTML = monstre.sprite;
-    monsterStats.innerHTML = `${monstre.name} <br> <span class="red">♥</span> ${monstre.hp} &nbsp; | &nbsp; <span class="gold">⚔</span> ${monstre.atk}`;
-    display2.innerHTML = player.sprite;
-    heroStats.innerHTML = `${player.name} <br> <span class="red">♥</span> ${player.hp} / ${player.hpMax} &nbsp; | &nbsp; <span class="gold">⚔</span> ${player.atk}`;
-    setTimeout(() => {
-        logText.innerHTML += "<br>Vous allez devoir vous battre pour avancer.";
-        statsBox1.style.display = "block";
-        statsBox2.style.display = "block";
-        heroActions.style.visibility = "visible";
-        log.scrollTop = log.scrollHeight;
+let ennemy = async (monstre) => {
+    return new Promise(resolve => {
+        logText.innerHTML += `<br>Vous rencontrez un <span class="name">${monstre.name}</span> !`
+        display1.innerHTML = monstre.sprite;
+        monsterStats.innerHTML = `${monstre.name} <br> <span class="red">♥</span> ${monstre.hp} &nbsp; | &nbsp; <span class="gold">⚔</span> ${monstre.atk}`;
+        display2.innerHTML = player.sprite;
+        heroStats.innerHTML = `${player.name} <br> <span class="red">♥</span> ${player.hp} / ${player.hpMax} &nbsp; | &nbsp; <span class="gold">⚔</span> ${player.atk}`;
         setTimeout(() => {
-            if (monstre.speed > player.speed) {
-                init = "monstre";
-                logText.innerHTML += `<br>${monstre.name} a l'initiative.`;
-            } else {
-                init = "player";
-                logText.innerHTML += "<br>Vous avez l'initiative.";
-            }
+            logText.innerHTML += "<br>Vous allez devoir vous battre pour avancer.";
+            statsBox1.style.display = "block";
+            statsBox2.style.display = "block";
+            heroActions.style.visibility = "visible";
             log.scrollTop = log.scrollHeight;
+            setTimeout(() => {
+                if (monstre.speed > player.speed) {
+                    init = "monstre";
+                    logText.innerHTML += `<br>${monstre.name} a l'initiative.`;
+                } else {
+                    init = "player";
+                    logText.innerHTML += "<br>Vous avez l'initiative.";
+                }
+                log.scrollTop = log.scrollHeight;
+                resolve(init)
+            }, 500);
         }, 500);
-    }, 500);
+    })
 }
 
-window.setup = function setup() {
-    window.location.reload(false)
-}
-
-window.play = function play() {
-    document.getElementById("play").style.display = "none";
+let play = () => {
+    start.style.display = "none";
     setTimeout(() => {
         monsterBg.style.background = "url(/public/img/anemos1.png)";
         monsterBg.style.backgroundSize = "cover";
@@ -154,9 +214,17 @@ window.play = function play() {
         heroBg.style.background = "url(/public/img/anemos2.png)";
         heroBg.style.backgroundSize = "cover";
         display2.innerHTML = '<img src="/public/img/fight.png" alt="fight" class="w-100" style="margin-bottom: 100px">';
-        setTimeout(() => {
-            ennemy(monster);
-            fight(monster);
+        setTimeout( async () => {
+            init = await ennemy(monster);
+            fight(monster,init);
         }, 1000);
     }, 500);
 }
+
+let reload = () => {
+    window.location.reload(false)
+}
+
+// BOUTONS START/RESET
+start.addEventListener("click",play);
+reset.addEventListener("click",reload);

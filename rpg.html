@@ -8,8 +8,8 @@
     <title>Jeu RPG</title>
 </head>
     <section id="sect1">
-        <button onclick="setup()" id="setup" class="m-5">(Re)start.</button>
-        <button onclick="play()" id="play" class="m-5">Joue !</button>
+        <button id="reset" class="m-5">Reset</button>
+        <button id="start" class="m-5">Start</button>
     </section>
     <section id="sect2">
         <div class="d-flex">
@@ -26,8 +26,8 @@
                 <p id="statsBox2" class="statBox d-none"><span id="heroStats"></span></p>
                 <div id="display2" class="displays"></div>
                 <div id="actionsB" class="actionBox">        
-                    <button id="action3" class="m-5">Attaque</button>
-                    <button id="action4" class="m-5">Sort de soin</button>
+                    <button id="action3" class="m-5" disabled>Attaque</button>
+                    <button id="action4" class="m-5" disabled>Sort de soin</button>
                 </div>
             </div>
         </div>
@@ -37,5 +37,6 @@
     </section>
     <!-- <script type="module" src="./public/js/rpgLoot.js"></script> -->
     <script type="module" src="./public/js/rpgFight.js"></script>
+    <!-- <script type="module" src="./public/js/test.js"></script> -->
 </body>
 </html>

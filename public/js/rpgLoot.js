@@ -7,7 +7,7 @@ import {Coffre} from "./modules/coffres.js";
     //1 héro
     let player = new Hero("Pavel",100,100,10,10,'<img src="./public/img/Felix_lBlade_Front.gif" alt="hero"  class="w-100">');
     //3 coffres permettent d’améliorer les statistiques de votre héro
-    let chest1 = new Coffre("Épée de célérité",0,15,5,'<img src="./public/img/21.png" alt="épée">');
+    let chest1 = new Coffre("Épée de célérité",0,15,5,'<img src="./public/img/sword.png" alt="épée">');
     //HTML
     let chestActions = document.getElementById("actionsA");
     let open = document.getElementById("action1");
@@ -64,7 +64,7 @@ window.play = function play() {
         monsterBg.style.background = "url(/public/img/anemos3.png)";
         monsterBg.style.backgroundSize = "cover";
         setTimeout(() => {
-            display1.innerHTML = '<img src="./public/img/Chest.png" alt="chest" style="width:100px">';
+            display1.innerHTML = '<img src="./public/img/chest.png" alt="chest" style="width:100px">';
             setTimeout(() => {
                 chestActions.style.visibility = "visible";
                 loot(chest1);
