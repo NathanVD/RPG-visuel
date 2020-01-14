@@ -32,6 +32,8 @@ p {
 }
 
 .window1 {
+  background-color: darkblue;
+  color: white;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -51,7 +53,7 @@ p {
 }
 
 .window2 {
-  background-color: #0d00c0;
+  background-color: darkblue;
   color: white;
   display: -webkit-box;
   display: -ms-flexbox;

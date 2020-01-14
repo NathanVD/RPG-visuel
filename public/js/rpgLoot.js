@@ -13,7 +13,7 @@ import {Coffre} from "./modules/coffres.js";
     let chest2 = new Coffre("coffre","Bottes de célérité",10,0,5,'<img src="./public/img/bottes.png" alt="bottes">');
     let chest3 = new Coffre("coffre","Armure de célérité",30,0,5,'<img src="./public/img/armure.png" alt="armure">');
     //Le donjooooooon !
-    let dungeon = [chest1,chest2,chest3,"hey"];
+    let dungeon = [chest1,chest2,chest3];
     //HTML
     let start = document.getElementById("start");
     let reset = document.getElementById("reset");
@@ -74,39 +74,50 @@ let openChest = (trésor) => {
     });
 }
   
-let loot = async (trésor) => {
-    logText.innerHTML = "Vous avez trouvé un coffre ! Ouvrez le pour voir ce qu'il y a dedans !";
-    action = await choice(open,ignore);
-    if (action == 1){
-        await openChest(trésor);
-    } else if(action == 2){
-        logText.innerHTML += "<br>Vous passez votre chemin sans ouvrir le coffre. Une décision courageuse."
-    }
-    logText.innerHTML += "<br>Vous sortez de la salle."
+let loot = (trésor) => {
+    return new Promise(async resolve => {
+        logText.innerHTML = "Vous avez trouvé un coffre ! Ouvrez le pour voir ce qu'il y a dedans !";
+        action = await choice(open,ignore);
+        if (action == 1){
+            await openChest(trésor);
+        } else if(action == 2){
+            logText.innerHTML += "<br>Vous passez votre chemin sans ouvrir le coffre. Une décision courageuse."
+        }
+        logText.innerHTML += "<br>Vous sortez de la salle."
+        resolve()
+    });
+}
+
+let chests = async () => {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            bgLeft.style.background = "url(/public/img/anemos3.png)";
+            bgLeft.style.backgroundSize = "cover";
+            setTimeout(() => {
+                display1.innerHTML = '<img src="./public/img/chest.png" alt="chest" style="width:100px">';
+                setTimeout(async () => {
+                    chestActions.style.visibility = "visible";
+                    await loot(room);
+                    resolve()
+                }, 500);
+            }, 500);
+        }, 500);
+    });
 }
 
 let reload = () => {
     window.location.reload(false)
 }
 
-let play = () => {
+let play = async () => {
     start.style.display = "none";
     room = select(dungeon);
     if (room.type == "coffre") {
-        setTimeout(() => {
-            bgLeft.style.background = "url(/public/img/anemos3.png)";
-            bgLeft.style.backgroundSize = "cover";
-            setTimeout(() => {
-                display1.innerHTML = '<img src="./public/img/chest.png" alt="chest" style="width:100px">';
-                setTimeout(() => {
-                    chestActions.style.visibility = "visible";
-                    loot(room);
-                }, 500);
-            }, 500);
-        }, 500);
+        await chests()
     } else {
         logText.innerHTML += "Pas un coffre"
     }
+    logText.innerHTML += "<br>Fin."
 }
 
 // BOUTONS START/RESET

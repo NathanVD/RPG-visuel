@@ -13,17 +13,14 @@ export class Coffre {
         this.bonusSpeed = bonusVitesse;
         this.sprite = img;
     }
-    equip(cible,affichage){
+    equip(cible,boite,affichage){
         cible.hpMax += this.bonusHP;
         cible.hp += this.bonusHP;
         cible.atk += this.bonusAtk;
         cible.speed += this.bonusSpeed;
-        affichage.style.color = "white";
-        affichage.style.backgroundColor = "darkblue";
-        affichage.style.fontSize = "20px";
-        affichage.style.justifyContent = "center";
-        affichage.innerHTML = `<p>♥ Points de vie +${this.bonusHP} => Nouvelle valeur : ${cible.hpMax}</p><br>
-        <p>⟰ Attaque +${this.bonusAtk} => Nouvelle valeur : ${cible.atk}</p><br>
-        <p>⤏ Vitesse +${this.bonusSpeed} => Nouvelle valeur : ${cible.speed}</p>`
+        boite.style.display = "block";
+        affichage.innerHTML = `<br><strong>♥ Points de vie +${this.bonusHP} => Nouvelle valeur : ${cible.hpMax}<br>
+<br>⟰ Attaque +${this.bonusAtk} => Nouvelle valeur : ${cible.atk}<br>
+<br>⤏ Vitesse +${this.bonusSpeed} => Nouvelle valeur : ${cible.speed}</strong><br>&nbsp;`
     }
 }
