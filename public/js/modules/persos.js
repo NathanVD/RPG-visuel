@@ -26,7 +26,11 @@ export class Hero extends Personnage {
     }
     //La méthode swordAttack() fera des dégâts au monstre du stage en fonction des dégâts du héro.
     swordAttack(cible,affichage,affichageCible,log){
-        cible.hp -= this.atk;
+        if (cible.hp - this.atk >= 0) {
+            cible.hp -= this.atk;
+        } else {
+            cible.hp = 0;
+        }
         log.innerHTML += `<br>Vous attaquez ${cible.name}.`
         affichage.innerHTML = '<img src="./public/img/joueur/Felix_lBlade_Attack1.gif" alt="hero attack1"  class="w-100"></img>';
         setTimeout(() => {
@@ -36,8 +40,8 @@ export class Hero extends Personnage {
                 affichageCible.style.filter= "saturate(100%)";
                 affichage.innerHTML = '<img src="./public/img/joueur/Felix_lBlade_Front.gif" alt="hero"  class="w-100"></img>';
                 log.innerHTML += ` Il perd ${this.atk}hp.`;
-            }, 500);
-        }, 500);
+            }, 300);
+        }, 300);
     }
     healingSpell(affichage,log){
         if (this.hp + 15 > this.hpMax) {
@@ -54,9 +58,9 @@ export class Hero extends Personnage {
                 setTimeout(() => {
                     affichage.innerHTML = '<img src="./public/img/joueur/Felix_lBlade_Front.gif" alt="hero"  class="w-100"></img>';
                     log.innerHTML += " Vous récupérez 15hp.";
-                }, 400);
-            }, 200);
-        }, 400);
+                }, 225);
+            }, 150);
+        }, 225);
 
     }
 }
@@ -75,7 +79,11 @@ export class Monstre extends Personnage {
         this.type = type;
     }
     attack(player,affichage,affichagePlayer,log){
-        player.hp -= this.atk;
+        if (player.hp - this.atk >= 0) {
+            player.hp -= this.atk;
+        } else {
+            player.hp = 0;
+        }
         log.innerHTML += `<br>${this.name} vous attaque.`;
         affichage.style.filter= "invert(75%)";
         setTimeout(() => {
@@ -88,9 +96,9 @@ export class Monstre extends Personnage {
                     affichage.style.filter= "invert(0%)";
                     setTimeout(() => {
                         log.innerHTML += ` Vous perdez ${this.atk}hp.`;
-                    }, 400);
-                }, 200);
-            }, 200);
-        }, 200);
+                    }, 300);
+                }, 100);
+            }, 100);
+        }, 100);
     }
 }
