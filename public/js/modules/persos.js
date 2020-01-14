@@ -28,13 +28,13 @@ export class Hero extends Personnage {
     swordAttack(cible,affichage,affichageCible,log){
         cible.hp -= this.atk;
         log.innerHTML += `<br>Vous attaquez ${cible.name}.`
-        affichage.innerHTML = '<img src="./public/img/Felix_lBlade_Attack1.gif" alt="hero attack1"  class="w-100"></img>';
+        affichage.innerHTML = '<img src="./public/img/joueur/Felix_lBlade_Attack1.gif" alt="hero attack1"  class="w-100"></img>';
         setTimeout(() => {
-            affichage.innerHTML = '<img src="./public/img/Felix_lBlade_Attack2.gif" alt="hero attack2"  class="w-100"></img>';
+            affichage.innerHTML = '<img src="./public/img/joueur/Felix_lBlade_Attack2.gif" alt="hero attack2"  class="w-100"></img>';
             affichageCible.style.filter= "saturate(1000%)";
             setTimeout(() => {
                 affichageCible.style.filter= "saturate(100%)";
-                affichage.innerHTML = '<img src="./public/img/Felix_lBlade_Front.gif" alt="hero"  class="w-100"></img>';
+                affichage.innerHTML = '<img src="./public/img/joueur/Felix_lBlade_Front.gif" alt="hero"  class="w-100"></img>';
                 log.innerHTML += ` Il perd ${this.atk}hp.`;
             }, 500);
         }, 500);
@@ -46,13 +46,13 @@ export class Hero extends Personnage {
             this.hp += 15;
         }
         log.innerHTML += "<br>Vous utilisez un sort de soin !"
-        affichage.innerHTML = '<img src="./public/img/Felix_lBlade_CastFront2.gif" alt="hero heal"  class="w-100"></img>';
+        affichage.innerHTML = '<img src="./public/img/joueur/Felix_lBlade_CastFront2.gif" alt="hero heal"  class="w-100"></img>';
         setTimeout(() => {
             affichage.style.filter = "hue-rotate(70deg)"
             setTimeout(() => {
                 affichage.style.filter = "hue-rotate(0deg)"
                 setTimeout(() => {
-                    affichage.innerHTML = '<img src="./public/img/Felix_lBlade_Front.gif" alt="hero"  class="w-100"></img>';
+                    affichage.innerHTML = '<img src="./public/img/joueur/Felix_lBlade_Front.gif" alt="hero"  class="w-100"></img>';
                     log.innerHTML += " Vous récupérez 15hp.";
                 }, 400);
             }, 200);

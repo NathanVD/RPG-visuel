@@ -5,7 +5,7 @@ import {Coffre} from "./modules/coffres.js";
 
     let room,action,init;
     //1 héro
-    let player = new Hero("Pavel",100,100,10,10,'<img src="./public/img/Felix_lBlade_Front.gif" alt="hero"  class="w-100">');
+    let player = new Hero("Pavel",100,100,10,10,'<img src="./public/img/joueur/Felix_lBlade_Front.gif" alt="hero"  class="w-100">');
     //monstre
     let monster1 = new Monstre("monstre","Slime",10,3,3,'<img src="./public/img/monstres/Ooze.gif" alt="slime" class="w-50"></img>');
     let monster2 = new Monstre("monstre","Gnome",15,5,5,'<img src="./public/img/monstres/Gnome.gif" alt="gnome" class="w-50"></img>');
@@ -13,12 +13,14 @@ import {Coffre} from "./modules/coffres.js";
     let monster4 = new Monstre("monstre","Skeleton",30,5,15,'<img src="./public/img/monstres/Skeleton.gif" alt="skeleton" class="w-100"></img>');
     let monster5 = new Monstre("monstre","Zombie",25,20,1,'<img src="./public/img/monstres/Zombie.gif" alt="zombie" class="w-100"></img>');
     let monster6 = new Monstre("monstre","Gargoyle",40,15,20,'<img src="./public/img/monstres/Clay_Gargoyle.gif" alt="gargoyle" class="w-100"></img>');
+    let monster7 = new Monstre("coffre","Mimic",40,15,20,'<img src="./public/img/monstres/Mimic.gif" alt="mimic" class="w-100"></img>');
     //3 coffres permettent d’améliorer les statistiques de votre héro
-    let chest1 = new Coffre("coffre","Épée de célérité",0,15,5,'<img src="./public/img/sword.png" alt="épée">');
-    let chest2 = new Coffre("coffre","Bottes de célérité",10,0,5,'<img src="./public/img/bottes.png" alt="bottes">');
-    let chest3 = new Coffre("coffre","Armure de célérité",30,0,5,'<img src="./public/img/armure.png" alt="armure">');
+    let chest1 = new Coffre("coffre","Épée de célérité",0,15,5,'<img src="./public/img/items/sword.png" alt="épée">');
+    let chest2 = new Coffre("coffre","Bottes de célérité",10,0,5,'<img src="./public/img/items/bottes.png" alt="bottes">');
+    let chest3 = new Coffre("coffre","Armure de célérité",30,0,5,'<img src="./public/img/items/armure.png" alt="armure">');
     //Le donjooooooon !
-    let dungeon = [monster1,monster2,monster3,monster4,monster5,monster6,chest1,chest2,chest3];
+    //let dungeon = [monster1,monster2,monster3,monster4,monster5,monster6,chest1,chest2,chest3];
+    let dungeon = [monster7];
     let compteur = 0;
     //HTML
     let start = document.getElementById("start");
@@ -116,12 +118,12 @@ let monsterDeath = async (monstre) => {
 
 let playerDeath = async (monstre) => {
     return new Promise( resolve => {
-        display2.innerHTML = '<img src="./public/img/Felix_lBlade_HitBack.gif" alt="hero"  class="w-100">';
+        display2.innerHTML = '<img src="./public/img/joueur/Felix_lBlade_HitBack.gif" alt="hero"  class="w-100">';
         setTimeout(() => {
-            display2.innerHTML = '<img src="./public/img/Felix_lBlade_DownedBack.gif" alt="hero"  class="w-100">';
+            display2.innerHTML = '<img src="./public/img/joueur/Felix_lBlade_DownedBack.gif" alt="hero"  class="w-100">';
             setTimeout(() => {
                 statsBox2.style.display = "none";
-                display2.innerHTML = '<img src="./public/img/Felix_lBlade_DownedBack.gif" alt="hero"  class="w-100">';
+                display2.innerHTML = '<img src="./public/img/joueur/Felix_lBlade_DownedBack.gif" alt="hero"  class="w-100">';
                 logText.innerHTML += `<br>Vous avez été défait par ${monstre.name} !`
                 log.scrollTop = log.scrollHeight;
                 resolve()
@@ -175,7 +177,11 @@ let fight = async (monstre,init) => {
 
 let initiative = async (monstre) => {
     return new Promise(resolve => {
-        logText.innerHTML += `<br>Vous rencontrez un <span class="name">${monstre.name}</span> !`
+        if (monstre.name == "Mimic") {
+            logText.innerHTML += `<br>Le coffre était en fait une <span class="name">${monstre.name}</span> !`
+        } else {
+            logText.innerHTML += `<br>Vous rencontrez un <span class="name">${monstre.name}</span> !`
+        }
         log.scrollTop = log.scrollHeight;
         display1.innerHTML = monstre.sprite;
         monsterStats.innerHTML = `${monstre.name} <br> <span class="red">♥</span> ${monstre.hp} &nbsp; | &nbsp; <span class="gold">⚔</span> ${monstre.atk}`;
@@ -205,10 +211,10 @@ let initiative = async (monstre) => {
 let ennemy = async () => {
     return new Promise(resolve => {
         setTimeout(() => {
-            bgLeft.style.background = "url(/public/img/anemos1.png)";
+            bgLeft.style.background = "url(/public/img/backgrounds/anemos1.png)";
             bgLeft.style.backgroundSize = "cover";
             display1.innerHTML = '<img src="/public/img/fight.png" alt="fight" class="w-100" style="margin-bottom: 100px">';
-            bgRight.style.background = "url(/public/img/anemos2.png)";
+            bgRight.style.background = "url(/public/img/backgrounds/anemos2.png)";
             bgRight.style.backgroundSize = "cover";
             display2.innerHTML = '<img src="/public/img/fight.png" alt="fight" class="w-100" style="margin-bottom: 100px">';
             setTimeout( async () => {
@@ -231,11 +237,38 @@ let ennemy = async () => {
 
 //Fonctions COFFRES
 
+let openMimic = () => {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            chestActions.style.visibility = "hidden";
+            display1.style.filter = "invert(100%)";
+            setTimeout(() => {
+                display1.style.filter = "invert(0%)";
+                setTimeout(() => {
+                    display1.style.filter = "invert(100%)";
+                    setTimeout( () => {
+                        display1.style.filter = "invert(0%)";
+                        setTimeout(async () => {
+                            setTimeout(() => {
+                                display1.style.filter = "invert(0%)";
+                            }, 500);
+                            display1.style.filter = "invert(100%)";
+                            await ennemy()
+                            resolve()
+                        }, 500);
+                    }, 100);
+                }, 100);
+            }, 100);
+        }, 300);
+    });
+}
+
 let openChest = (trésor) => {
     return new Promise(resolve => {
-        display1.innerHTML = '<img src="./public/img/openChest.png" alt="open chest" style="width:100px">';
+        display1.innerHTML = '<img src="./public/img/items/openChest.png" alt="open chest" style="width:100px">';
         item.innerHTML = trésor.sprite;
         logText.innerHTML += `<br>Le coffre contenait un(e) <span class="name">${trésor.name}</span> que vous équipez.`
+        log.scrollTop = log.scrollHeight;
         trésor.equip(player,statsBox2,heroStats);
         setTimeout(() => {
             action1.removeAttribute("disabled");
@@ -248,23 +281,28 @@ let openChest = (trésor) => {
   
 let loot = (trésor) => {
     return new Promise(async resolve => {
-        logText.innerHTML = "Vous avez trouvé un coffre ! Ouvrez le pour voir ce qu'il y a dedans !";
+        logText.innerHTML += "<br>Vous avez trouvé un coffre ! Ouvrez le pour voir ce qu'il y a dedans !";
+        log.scrollTop = log.scrollHeight;
         action = await choice(open,ignore);
         if (action == 1){
-            bgRight.style.justifyContent = "center";
-            await openChest(trésor);
-            bgRight.style.justifyContent = "flex-end";
-            chestActions.style.visibility = "hidden";
-            action1.innerHTML = "Ouvrir";
-            action2.style.display = "inline-block";
+            if (trésor.name == "Mimic") {
+                await openMimic();
+            } else {
+                bgRight.style.justifyContent = "center";
+                await openChest(trésor);
+                bgRight.style.justifyContent = "flex-end";
+                chestActions.style.visibility = "hidden";
+                action1.innerHTML = "Ouvrir";
+                action2.style.display = "inline-block";
+            }
         } else if(action == 2){
             logText.innerHTML += "<br>Vous passez votre chemin sans ouvrir le coffre. Une décision courageuse."
+            log.scrollTop = log.scrollHeight;
         }
         bgLeft.style.background = "darkblue";
         bgRight.style.background = "darkblue";
         display1.innerHTML = '';
         item.innerHTML = "";
-        logText.innerHTML += "<br>Vous sortez de la salle."
         resolve()
     });
 }
@@ -272,10 +310,10 @@ let loot = (trésor) => {
 let chests = async () => {
     return new Promise(resolve => {
         setTimeout(() => {
-            bgLeft.style.background = "url(/public/img/anemos3.png)";
+            bgLeft.style.background = "url(/public/img/backgrounds/anemos3.png)";
             bgLeft.style.backgroundSize = "cover";
             setTimeout(() => {
-                display1.innerHTML = '<img src="./public/img/chest.png" alt="chest" style="width:100px">';
+                display1.innerHTML = '<img src="./public/img/items/chest.png" alt="chest" style="width:100px">';
                 setTimeout(async () => {
                     chestActions.style.visibility = "visible";
                     await loot(room);
