@@ -14,6 +14,8 @@ import {Coffre} from "./modules/coffres.js";
     let monster5 = new Monstre("monstre","Zombie",25,20,1,'<img src="./public/img/monstres/Zombie.gif" alt="zombie" class="w-100"></img>');
     let monster6 = new Monstre("monstre","Gargoyle",40,15,20,'<img src="./public/img/monstres/Clay_Gargoyle.gif" alt="gargoyle" class="w-100"></img>');
     let monster7 = new Monstre("coffre","Mimic",40,15,20,'<img src="./public/img/monstres/Mimic.gif" alt="mimic" class="w-100"></img>');
+    //boss
+    let boss1 = new Monstre("boss","Manticore",80,20,25,'<img src="./public/img/monstres/boss/Manticore.gif" alt="mimic" class="w-100"></img>');
     //3 coffres permettent d’améliorer les statistiques de votre héro
     let chest1 = new Coffre("coffre","Épée de célérité",0,15,5,'<img src="./public/img/items/sword.png" alt="épée">');
     let chest2 = new Coffre("coffre","Bottes de célérité",10,0,5,'<img src="./public/img/items/bottes.png" alt="bottes">');
@@ -207,7 +209,7 @@ let initiative = async (monstre) => {
     })
 }
 
-let ennemy = async () => {
+let ennemy = async (room) => {
     return new Promise(resolve => {
         setTimeout(() => {
             bgLeft.style.background = "url(/public/img/backgrounds/anemos1.png)";
@@ -252,7 +254,7 @@ let openMimic = () => {
                                 display1.style.filter = "invert(0%)";
                             }, 500);
                             display1.style.filter = "invert(100%)";
-                            await ennemy()
+                            await ennemy(room)
                             resolve()
                         }, 500);
                     }, 100);
@@ -355,7 +357,7 @@ let play = async () => {
     while (dungeon.length > 0 && player.hp > 0) {
         room = select(dungeon);
         if (room.type == "monstre") {
-            await ennemy()
+            await ennemy(room)
         } else if (room.type == "coffre"){
             await chests()
         } else {
@@ -368,6 +370,7 @@ let play = async () => {
             log.scrollTop = log.scrollHeight;
         }
     }
+    if (player.hp > 0) { await ennemy(boss1); }
     if (player.hp > 0) {
         bgLeft.style.background = "url(/public/img/wall1.jpg)";
         bgLeft.style.backgroundSize = "cover";
