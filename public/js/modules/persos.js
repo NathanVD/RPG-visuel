@@ -70,8 +70,9 @@ Chaque monstre a :
 */
 
 export class Monstre extends Personnage {
-    constructor(nom,pv,attaque,vitesse,img){
+    constructor(type,nom,pv,attaque,vitesse,img){
         super(nom,pv,attaque,vitesse,img);
+        this.type = type;
     }
     attack(player,affichage,affichagePlayer,log){
         player.hp -= this.atk;

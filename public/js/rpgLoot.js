@@ -1,15 +1,19 @@
-import {Hero} from "./modules/persos.js";
+import {Hero,Monstre} from "./modules/persos.js";
 import {Coffre} from "./modules/coffres.js";
 
 // VARIABLES {
 
-    let action;//init;
+    let room,action;//init;
     //1 héro
     let player = new Hero("Pavel",100,100,10,10,'<img src="./public/img/Felix_lBlade_Front.gif" alt="hero"  class="w-100">');
     //monstres
     // let monster = new Monstre("Skeleton",30,5,10,'<img src="./public/img/Skeleton.gif" alt="skeleton"  class="w-100"></img>');
     //3 coffres permettent d’améliorer les statistiques de votre héro
-    let chest1 = new Coffre("Épée de célérité",0,15,5,'<img src="./public/img/sword.png" alt="épée">');
+    let chest1 = new Coffre("coffre","Épée de célérité",0,15,5,'<img src="./public/img/sword.png" alt="épée">');
+    let chest2 = new Coffre("coffre","Bottes de célérité",10,0,5,'<img src="./public/img/bottes.png" alt="bottes">');
+    let chest3 = new Coffre("coffre","Armure de célérité",30,0,5,'<img src="./public/img/armure.png" alt="armure">');
+    //Le donjooooooon !
+    let dungeon = [chest1,chest2,chest3,"hey"];
     //HTML
     let start = document.getElementById("start");
     let reset = document.getElementById("reset");
@@ -50,6 +54,11 @@ let choice = (action1,action2) => {
     });
 }
 
+let select = (donjon) => {
+    let selector = parseInt(Math.random()*donjon.length);
+    return donjon[selector]
+}
+
 let openChest = (trésor) => {
     return new Promise(resolve => {
         display1.innerHTML = '<img src="./public/img/openChest.png" alt="open chest" style="width:100px">';
@@ -60,7 +69,7 @@ let openChest = (trésor) => {
             action1.removeAttribute("disabled");
             action1.innerHTML = "Continuer";
             action2.style.display = "none";
-            action1.addEventListener("click", ()=> resolve() )
+            action1.addEventListener("click", ()=>resolve() )
         }, 500);
     });
 }
@@ -82,17 +91,22 @@ let reload = () => {
 
 let play = () => {
     start.style.display = "none";
-    setTimeout(() => {
-        bgLeft.style.background = "url(/public/img/anemos3.png)";
-        bgLeft.style.backgroundSize = "cover";
+    room = select(dungeon);
+    if (room.type == "coffre") {
         setTimeout(() => {
-            display1.innerHTML = '<img src="./public/img/chest.png" alt="chest" style="width:100px">';
+            bgLeft.style.background = "url(/public/img/anemos3.png)";
+            bgLeft.style.backgroundSize = "cover";
             setTimeout(() => {
-                chestActions.style.visibility = "visible";
-                loot(chest1);
+                display1.innerHTML = '<img src="./public/img/chest.png" alt="chest" style="width:100px">';
+                setTimeout(() => {
+                    chestActions.style.visibility = "visible";
+                    loot(room);
+                }, 500);
             }, 500);
         }, 500);
-    }, 500);
+    } else {
+        logText.innerHTML += "Pas un coffre"
+    }
 }
 
 // BOUTONS START/RESET

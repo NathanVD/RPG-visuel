@@ -5,7 +5,8 @@ les coffres permettent d’améliorer les statistiques de votre héro.
 */
 
 export class Coffre {
-    constructor(nom,bonusPV,bonusAttaque,bonusVitesse,img){
+    constructor(type,nom,bonusPV,bonusAttaque,bonusVitesse,img){
+        this.type = type;
         this.name = nom;
         this.bonusHP = bonusPV;
         this.bonusAtk = bonusAttaque;
@@ -17,8 +18,8 @@ export class Coffre {
         cible.hp += this.bonusHP;
         cible.atk += this.bonusAtk;
         cible.speed += this.bonusSpeed;
-        affichage.style.color = "gold";
-        affichage.style.backgroundColor = "brown";
+        affichage.style.color = "white";
+        affichage.style.backgroundColor = "darkblue";
         affichage.style.fontSize = "20px";
         affichage.style.justifyContent = "center";
         affichage.innerHTML = `<p>♥ Points de vie +${this.bonusHP} => Nouvelle valeur : ${cible.hpMax}</p><br>

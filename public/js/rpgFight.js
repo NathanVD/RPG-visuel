@@ -1,12 +1,22 @@
 import {Hero,Monstre} from "./modules/persos.js";
+import {Coffre} from "./modules/coffres.js";
 
 // VARIABLES {
 
-    let action,init;
+    let room,action,init;
     //1 héro
-    let player = new Hero("Pavel",10,100,10,10,'<img src="./public/img/Felix_lBlade_Front.gif" alt="hero"  class="w-100">');
+    let player = new Hero("Pavel",20,100,10,10,'<img src="./public/img/Felix_lBlade_Front.gif" alt="hero"  class="w-100">');
     //monstre
-    let monster = new Monstre("Skeleton",30,5,10,'<img src="./public/img/Skeleton.gif" alt="skeleton"  class="w-100"></img>');
+    let monster1 = new Monstre("monstre","Gnome",10,2,5,'<img src="./public/img/Gnome.gif" alt="gnome"  class="w-50"></img>');
+    let monster2 = new Monstre("monstre","Skeleton",30,5,15,'<img src="./public/img/Skeleton.gif" alt="skeleton"  class="w-100"></img>');
+    let monster3 = new Monstre("monstre","Zombie",50,10,10,'<img src="./public/img/Zombie.gif" alt="zombie"  class="w-100"></img>');
+    //3 coffres permettent d’améliorer les statistiques de votre héro
+    let chest1 = new Coffre("coffre","Épée de célérité",0,15,5,'<img src="./public/img/sword.png" alt="épée">');
+    //let chest2 = new Coffre("chest","Bottes de célérité",10,0,5,'<img src="./public/img/bottes.png" alt="bottes">');
+    //let chest3 = new Coffre("chest","Armure de célérité",30,0,5,'<img src="./public/img/armure.png" alt="armure">');
+    //Le donjooooooon !
+    let dungeon = [monster1,monster2,monster3,chest1];
+    let compteur = 0;
     //HTML
     let start = document.getElementById("start");
     let reset = document.getElementById("reset");
@@ -46,6 +56,11 @@ let choice = (action1,action2) => {
             resolve(2);
         });
     });
+}
+
+let select = (donjon) => {
+    let selector = donjon.splice(parseInt(Math.random()*donjon.length),1);
+    return selector[0]
 }
 
 let swordAttack = async (monstre) => {
@@ -106,6 +121,7 @@ let monsterDeath = async (monstre) => {
             log.scrollTop = log.scrollHeight;
             setTimeout(() => {
                     display1.innerHTML = "";
+                    display1.style.filter= "saturate(100%)";
                     logText.innerHTML += `<br>Combat terminé.`
                     log.scrollTop = log.scrollHeight;
                     resolve()
@@ -124,11 +140,7 @@ let playerDeath = async (monstre) => {
                 display2.innerHTML = '<img src="./public/img/Felix_lBlade_DownedBack.gif" alt="hero"  class="w-100">';
                 logText.innerHTML += `<br>Vous avez été défait par ${monstre.name} !`
                 log.scrollTop = log.scrollHeight;
-                setTimeout(() => {
-                    logText.innerHTML += `<br>Game Over !`
-                    log.scrollTop = log.scrollHeight;
-                    resolve()
-                }, 1000);
+                resolve()
             }, 500);
         }, 500);
     });
@@ -177,19 +189,20 @@ let fight = async (monstre,init) => {
     }
 }
 
-let ennemy = async (monstre) => {
+let initiative = async (monstre) => {
     return new Promise(resolve => {
         logText.innerHTML += `<br>Vous rencontrez un <span class="name">${monstre.name}</span> !`
+        log.scrollTop = log.scrollHeight;
         display1.innerHTML = monstre.sprite;
         monsterStats.innerHTML = `${monstre.name} <br> <span class="red">♥</span> ${monstre.hp} &nbsp; | &nbsp; <span class="gold">⚔</span> ${monstre.atk}`;
         display2.innerHTML = player.sprite;
         heroStats.innerHTML = `${player.name} <br> <span class="red">♥</span> ${player.hp} / ${player.hpMax} &nbsp; | &nbsp; <span class="gold">⚔</span> ${player.atk}`;
         setTimeout(() => {
             logText.innerHTML += "<br>Vous allez devoir vous battre pour avancer.";
+            log.scrollTop = log.scrollHeight;
             statsBox1.style.display = "block";
             statsBox2.style.display = "block";
             heroActions.style.visibility = "visible";
-            log.scrollTop = log.scrollHeight;
             setTimeout(() => {
                 if (monstre.speed > player.speed) {
                     init = "monstre";
@@ -205,20 +218,58 @@ let ennemy = async (monstre) => {
     })
 }
 
-let play = () => {
+let ennemy = async () => {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            bgLeft.style.background = "url(/public/img/anemos1.png)";
+            bgLeft.style.backgroundSize = "cover";
+            display1.innerHTML = '<img src="/public/img/fight.png" alt="fight" class="w-100" style="margin-bottom: 100px">';
+            bgRight.style.background = "url(/public/img/anemos2.png)";
+            bgRight.style.backgroundSize = "cover";
+            display2.innerHTML = '<img src="/public/img/fight.png" alt="fight" class="w-100" style="margin-bottom: 100px">';
+            setTimeout( async () => {
+                init = await initiative(room);
+                await fight(room,init);
+                statsBox1.style.display = "none";
+                statsBox2.style.display = "none";
+                heroActions.style.visibility = "hidden";
+                setTimeout(() => {
+                    display1.innerHTML = "";
+                    display2.innerHTML = "";   
+                    resolve()
+                }, 500);
+            }, 1000);
+        }, 500);
+    });
+}
+
+let play = async () => {
     start.style.display = "none";
-    setTimeout(() => {
-        bgLeft.style.background = "url(/public/img/anemos1.png)";
-        bgLeft.style.backgroundSize = "cover";
-        display1.innerHTML = '<img src="/public/img/fight.png" alt="fight" class="w-100" style="margin-bottom: 100px">';
-        bgRight.style.background = "url(/public/img/anemos2.png)";
-        bgRight.style.backgroundSize = "cover";
-        display2.innerHTML = '<img src="/public/img/fight.png" alt="fight" class="w-100" style="margin-bottom: 100px">';
-        setTimeout( async () => {
-            init = await ennemy(monster);
-            fight(monster,init);
-        }, 1000);
-    }, 500);
+    while (dungeon.length > 0 && player.hp > 0) {
+        room = select(dungeon);
+        if (room.type == "monstre") {
+            await ennemy()
+        } else if (room.type == "coffre"){
+            logText.innerHTML += "<br>Un coffre !";
+            log.scrollTop = log.scrollHeight;
+        } else {
+            logText.innerHTML += "<br>Heu ...";
+            log.scrollTop = log.scrollHeight;
+        }
+        if (dungeon.length > 0 && player.hp > 0) {
+            compteur++
+            logText.innerHTML += "<br><strong>Salle suivante !</strong>";
+            log.scrollTop = log.scrollHeight;
+        }
+    }
+    if (player.hp > 0) {
+        logText.innerHTML += "<br><strong>Donjon terminé !</strong>";
+        log.scrollTop = log.scrollHeight;
+    } else {
+        logText.innerHTML += "<br><strong>Game Over !</strong>";
+        logText.innerHTML += `<br><strong>Salles parcourues : ${compteur}</strong>`;
+        log.scrollTop = log.scrollHeight;
+    }
 }
 
 let reload = () => {

@@ -75,9 +75,6 @@ p {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  -webkit-box-align: end;
-      -ms-flex-align: end;
-          align-items: flex-end;
   height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
@@ -86,7 +83,7 @@ p {
 }
 
 .statBox {
-  background-color: #0d00c0;
+  background-color: darkblue;
   color: white;
   text-align: center;
   border: solid white 2px;
@@ -94,7 +91,7 @@ p {
 }
 
 .actionBox {
-  background-color: #0d00c0;
+  background-color: darkblue;
   color: white;
   text-align: center;
   border: solid black 2px;
@@ -123,6 +120,10 @@ p {
 
 .m-5 {
   margin: 5px;
+}
+
+.w-50 {
+  width: 50%;
 }
 
 .w-75 {
