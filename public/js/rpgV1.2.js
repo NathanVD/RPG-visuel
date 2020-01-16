@@ -3,25 +3,48 @@ import {Coffre} from "./modules/coffres.js";
 
 // VARIABLES {
 
-    let room,action,init;
+    let pick,room,action,init;
     //1 héro
     let player = new Hero("Pavel",100,100,10,10,'<img src="./public/img/joueur/Felix_lBlade_Front.gif" alt="hero"  class="w-100">');
     //monstre
-    let monster1 = new Monstre("monstre","Slime",10,3,3,'<img src="./public/img/monstres/Ooze.gif" alt="slime" class="w-50"></img>');
+    let monster1 = new Monstre("monstre","Slime",10,3,0,'<img src="./public/img/monstres/Ooze.gif" alt="slime" class="w-50"></img>');
     let monster2 = new Monstre("monstre","Gnome",15,5,5,'<img src="./public/img/monstres/Gnome.gif" alt="gnome" class="w-50"></img>');
-    let monster3 = new Monstre("monstre","Goblin",25,8,12,'<img src="./public/img/monstres/Goblin.gif" alt="goblin" class="w-75"></img>');
+    let monster3 = new Monstre("monstre","Goblin",25,8,15,'<img src="./public/img/monstres/Goblin.gif" alt="goblin" class="w-75"></img>');
     let monster4 = new Monstre("monstre","Skeleton",30,5,15,'<img src="./public/img/monstres/Skeleton.gif" alt="skeleton" class="w-100"></img>');
-    let monster5 = new Monstre("monstre","Zombie",25,20,1,'<img src="./public/img/monstres/Zombie.gif" alt="zombie" class="w-100"></img>');
+    let monster5 = new Monstre("monstre","Zombie",25,20,0,'<img src="./public/img/monstres/Zombie.gif" alt="zombie" class="w-100"></img>');
     let monster6 = new Monstre("monstre","Gargoyle",40,15,20,'<img src="./public/img/monstres/Clay_Gargoyle.gif" alt="gargoyle" class="w-100"></img>');
-    let monster7 = new Monstre("coffre","Mimic",40,15,20,'<img src="./public/img/monstres/Mimic.gif" alt="mimic" class="w-100"></img>');
+    let monster7 = new Monstre("monstre","Bat",5,10,15,'<img src="./public/img/monstres/Bat.gif" alt="bat" class="w-50"></img>');
+    let monster8 = new Monstre("monstre","Chimera",45,20,20,'<img src="./public/img/monstres/Chimera.gif" alt="chimera" class="w-100"></img>');
+    let monster9 = new Monstre("monstre","Wyvern",30,10,20,'<img src="./public/img/monstres/Wyvern.gif" alt="wyvern" class="w-100"></img>');
+    let monster10 = new Monstre("monstre","Kobold",20,10,15,'<img src="./public/img/monstres/Kobold.gif" alt="kobold" class="w-100"></img>');
+    let roaster1 = [monster1,monster2,monster3,monster4,monster5,monster6,monster7,monster8,monster9,monster10];
+    //mimique
+    let monsterX = new Monstre("coffre","Mimic",40,15,20,'<img src="./public/img/monstres/Mimic.gif" alt="mimic" class="w-100"></img>');
     //boss
-    let boss1 = new Monstre("boss","Manticore",80,20,25,'<img src="./public/img/monstres/boss/Manticore.gif" alt="mimic" class="w-100"></img>');
+    let boss1 = new Monstre("boss","Manticore",100,25,25,'<img src="./public/img/monstres/boss/Manticore.gif" alt="manticore" class="w-100"></img>');
+    let boss2 = new Monstre("boss","Hydra",75,30,15,'<img src="./public/img/monstres/boss/Hydra.gif" alt="hydra" class="w-100"></img>');
+    let boss3 = new Monstre("boss","Poseidon",150,20,10,'<img src="./public/img/monstres/boss/Poseidon.gif" alt="poseidon" class="w-100"></img>');
     //3 coffres permettent d’améliorer les statistiques de votre héro
-    let chest1 = new Coffre("coffre","Épée de célérité",0,15,5,'<img src="./public/img/items/sword.png" alt="épée">');
+    let chest1 = new Coffre("coffre","Épée de célérité",0,10,5,'<img src="./public/img/items/sword.png" alt="épée">');
     let chest2 = new Coffre("coffre","Bottes de célérité",10,0,5,'<img src="./public/img/items/bottes.png" alt="bottes">');
-    let chest3 = new Coffre("coffre","Armure de célérité",30,0,5,'<img src="./public/img/items/armure.png" alt="armure">');
+    let chest3 = new Coffre("coffre","Armure de célérité",20,0,5,'<img src="./public/img/items/armure.png" alt="armure">');
+    let chest4 = new Coffre("coffre","Anneau de perfection",10,10,10,'<img src="./public/img/items/anneau.png" alt="anneau">');
+    let chest5 = new Coffre("coffre","Casque de force",10,5,0,'<img src="./public/img/items/casque.png" alt="casque">');
+    let treasurePool1 = [chest1,chest2,chest3,chest4,chest5];
     //Le donjooooooon !
-    let dungeon = [monster1,monster2,monster3,monster4,monster5,monster6,monster7,chest1,chest2,chest3];
+    let dungeon = [monsterX];
+    for (let i = 0; i < 5; i++) {
+        pick = parseInt(Math.random()*roaster1.length);
+        dungeon.push(roaster1[pick]);  
+        roaster1.splice(pick,1);
+    }
+    for (let i = 0; i < parseInt(Math.random()*3+1); i++) {
+        pick = parseInt(Math.random()*treasurePool1.length);
+        dungeon.push(treasurePool1[pick]);
+        treasurePool1.splice(pick,1);
+    }
+    console.log(dungeon);
+    
     let compteur = 0;
     //HTML
     let start = document.getElementById("start");
@@ -112,8 +135,8 @@ let monsterDeath = async (monstre) => {
                     logText.innerHTML += `<br>Combat terminé.`
                     log.scrollTop = log.scrollHeight;
                     resolve()
-            }, 1000);
-        }, 1000);
+            }, 500);
+        }, 500);
     });
 }
 
