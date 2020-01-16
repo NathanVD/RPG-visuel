@@ -17,13 +17,15 @@ import {Coffre} from "./modules/coffres.js";
     let monster8 = new Monstre("monstre","Chimera",45,20,20,'<img src="./public/img/monstres/Chimera.gif" alt="chimera" class="w-100"></img>');
     let monster9 = new Monstre("monstre","Wyvern",30,10,20,'<img src="./public/img/monstres/Wyvern.gif" alt="wyvern" class="w-100"></img>');
     let monster10 = new Monstre("monstre","Kobold",20,10,15,'<img src="./public/img/monstres/Kobold.gif" alt="kobold" class="w-100"></img>');
-    let roaster1 = [monster1,monster2,monster3,monster4,monster5,monster6,monster7,monster8,monster9,monster10];
+    let monsterPool1 = [monster1,monster2,monster3,monster4,monster5,monster6,monster7,monster8,monster9,monster10];
     //mimique
     let monsterX = new Monstre("coffre","Mimic",40,15,20,'<img src="./public/img/monstres/Mimic.gif" alt="mimic" class="w-100"></img>');
     //boss
     let boss1 = new Monstre("boss","Manticore",100,25,25,'<img src="./public/img/monstres/boss/Manticore.gif" alt="manticore" class="w-100"></img>');
     let boss2 = new Monstre("boss","Hydra",75,30,15,'<img src="./public/img/monstres/boss/Hydra.gif" alt="hydra" class="w-100"></img>');
     let boss3 = new Monstre("boss","Poseidon",150,20,10,'<img src="./public/img/monstres/boss/Poseidon.gif" alt="poseidon" class="w-100"></img>');
+    let bossPool1 = [boss1,boss2,boss3];
+    let boss = bossPool1[parseInt(Math.random()*bossPool1.length)];
     //3 coffres permettent d’améliorer les statistiques de votre héro
     let chest1 = new Coffre("coffre","Épée de célérité",0,10,5,'<img src="./public/img/items/sword.png" alt="épée">');
     let chest2 = new Coffre("coffre","Bottes de célérité",10,0,5,'<img src="./public/img/items/bottes.png" alt="bottes">');
@@ -34,15 +36,16 @@ import {Coffre} from "./modules/coffres.js";
     //Le donjooooooon !
     let dungeon = [monsterX];
     for (let i = 0; i < 5; i++) {
-        pick = parseInt(Math.random()*roaster1.length);
-        dungeon.push(roaster1[pick]);  
-        roaster1.splice(pick,1);
+        pick = parseInt(Math.random()*monsterPool1.length);
+        dungeon.push(monsterPool1[pick]);  
+        monsterPool1.splice(pick,1);
     }
     for (let i = 0; i < parseInt(Math.random()*3+1); i++) {
         pick = parseInt(Math.random()*treasurePool1.length);
         dungeon.push(treasurePool1[pick]);
         treasurePool1.splice(pick,1);
     }
+    
     console.log(dungeon);
     
     let compteur = 0;
@@ -393,7 +396,7 @@ let play = async () => {
             log.scrollTop = log.scrollHeight;
         }
     }
-    if (player.hp > 0) { await ennemy(boss1); }
+    if (player.hp > 0) { await ennemy(boss); }
     if (player.hp > 0) {
         bgLeft.style.background = "url(/public/img/wall1.jpg)";
         bgLeft.style.backgroundSize = "cover";

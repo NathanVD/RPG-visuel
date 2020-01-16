@@ -1,5 +1,5 @@
-import {Hero,Monstre} from "./modules/persos.js";
-import {Coffre} from "./modules/coffres.js";
+import {Hero,Monstre} from "../modules/persos.js";
+import {Coffre} from "../modules/coffres.js";
 
 // VARIABLES {
 
