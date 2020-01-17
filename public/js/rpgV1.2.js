@@ -53,13 +53,12 @@ import {Coffre} from "./modules/coffres.js";
     let start = document.getElementById("start");
     let reset = document.getElementById("reset");
     let chestActions = document.getElementById("actionsA");
-    // let open = document.getElementById("action1");
-    // let ignore = document.getElementById("action2");
+    let open = document.getElementById("action1");
+    let ignore = document.getElementById("action2");
     let heroActions = document.getElementById("actionsB");
-    // let attack = document.getElementById("action3");
-    // let heal = document.getElementById("action4");
-    // let item = document.getElementById("displayItem");
-    let buttons = document.getElementsByClassName("buttons");
+    let attack = document.getElementById("action3");
+    let heal = document.getElementById("action4");
+    let item = document.getElementById("displayItem");
     let bgLeft = document.getElementById("bg1");
     let display1 = document.getElementById("display1");
     let statsBox1 = document.getElementById("statsBox1");
@@ -207,6 +206,10 @@ let initiative = async (monstre) => {
     return new Promise(resolve => {
         if (monstre.name == "Mimic") {
             logText.innerHTML += `<br>Le coffre était en fait une <span class="name">${monstre.name}</span> !`
+        } else if (monstre.type == "boss") {
+            logText.innerHTML += `<br>Vous appercevez la sortie du donjon !`
+            log.scrollTop = log.scrollHeight;
+            logText.innerHTML += `<br>Cependant un <span class="bossName">${monstre.name}</span> se dresse en travers de votre chemin !`
         } else {
             logText.innerHTML += `<br>Vous rencontrez un <span class="name">${monstre.name}</span> !`
         }

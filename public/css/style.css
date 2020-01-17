@@ -40,6 +40,7 @@ p {
 }
 
 .window1 {
+  position: relative;
   background-color: black;
   color: white;
   display: -webkit-box;
@@ -110,6 +111,17 @@ p {
   padding: 5px;
 }
 
+.inventory {
+  background-color: darkblue;
+  color: white;
+  border: solid white 2px;
+  border-radius: 10px;
+  position: absolute;
+  z-index: 10;
+  bottom: 50px;
+  right: 122px;
+}
+
 .red {
   color: red;
 }
@@ -153,13 +165,14 @@ p {
 }
 
 .bossName {
-  color: #8b0e0e;
+  color: #f63232;
 }
 
 .item {
   position: relative;
-  top: 35%;
-  right: 10%;
+  z-index: 5;
+  top: 37%;
+  right: 15%;
 }
 
 #actionsA, #actionsB {

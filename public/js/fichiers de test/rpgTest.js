@@ -4,7 +4,7 @@ import {Item} from "../modules/items.js";
 
 // VARIABLES {
 
-    let pick,room,action,init,chosen;
+    let pick,room,action,init;
     //1 héro
     let player = new Hero("Pavel",100,100,10,10,[],'<img src="./public/img/joueur/Felix_lBlade_Front.gif" alt="hero"  class="w-100">');
     //monstre
@@ -24,7 +24,7 @@ import {Item} from "../modules/items.js";
     //boss
     let boss1 = new Monstre("boss","Manticore",100,25,25,'<img src="./public/img/monstres/boss/Manticore.gif" alt="manticore" class="w-100"></img>');
     let boss2 = new Monstre("boss","Hydra",75,30,15,'<img src="./public/img/monstres/boss/Hydra.gif" alt="hydra" class="w-100"></img>');
-    let boss3 = new Monstre("boss","Poseidon",150,20,10,'<img src="./public/img/monstres/boss/Poseidon.gif" alt="poseidon" class="w-100"></img>');
+    let boss3 = new Monstre("boss","Cruel Dragon",150,20,10,'<img src="./public/img/monstres/boss/Cruel_Dragon.gif" alt="poseidon" class="w-150"></img>');
     let bossPool1 = [boss1,boss2,boss3];
     let boss = bossPool1[parseInt(Math.random()*bossPool1.length)];
     //3 coffres permettent d’améliorer les statistiques de votre héro
@@ -35,17 +35,19 @@ import {Item} from "../modules/items.js";
     let chest5 = new Coffre("coffre","Casque de force",10,5,0,'<img src="./public/img/relics/casque.png" class="w-50" alt="casque">');
     let treasurePool1 = [chest1,chest2,chest3,chest4,chest5];
     //items
-    let item1 = new Item("objet","Potion",'<img src="./public/img/items/potion.gif" class="w-25" alt="potion">')
-    
+    let item1 = new Item("objet","Potion","./public/img/items/potion.gif");
+    let item2 = new Item("objet","Élixir de force","./public/img/items/elixir.gif");
+    let itemPool = [item1,item2];
+
     //Inventaire de départ du joueur
     for (let i = 0; i < 3; i++) {
-        player.inventory.push(item1);
+        player.inventory.push(itemPool[parseInt(Math.random()*itemPool.length)]);
     }
     console.log(player);
     
     //Le donjooooooon !
     let dungeon = [monsterX];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 2; i++) {
         pick = parseInt(Math.random()*monsterPool1.length);
         dungeon.push(monsterPool1[pick]);
         monsterPool1.splice(pick,1);
@@ -61,12 +63,7 @@ import {Item} from "../modules/items.js";
     let start = document.getElementById("start");
     let reset = document.getElementById("reset");
     let chestActions = document.getElementById("actionsA");
-    // let open = document.getElementById("action1");
-    // let ignore = document.getElementById("action2");
     let heroActions = document.getElementById("actionsB");
-    // let attack = document.getElementById("action3");
-    // let heal = document.getElementById("action4");
-    // let item = document.getElementById("displayItem");
     let buttons = document.getElementsByClassName("button");
     let relic = document.getElementById("displayItem");
     let bgLeft = document.getElementById("bg1");
@@ -86,7 +83,7 @@ import {Item} from "../modules/items.js";
 
 //Fonctions MONSTRES
 
-let swordAttack = async (monstre) => {
+let swordAttack = (monstre) => {
     return new Promise( resolve => {
         player.swordAttack(monstre,display2,display1,logText);
         log.scrollTop = log.scrollHeight;
@@ -102,7 +99,7 @@ let swordAttack = async (monstre) => {
     });
 }
 
-let healSpell = async () => {
+let healSpell = () => {
     return new Promise( resolve => {
         player.healingSpell(display2,logText);
         log.scrollTop = log.scrollHeight;
@@ -114,9 +111,26 @@ let healSpell = async () => {
     });
 }
 
-let useItem = async () => {
+let choseItem = () => {
     return new Promise( resolve => {
-        item1.use(player,display2,logText)
+        let menu = document.createElement("div");
+        menu.classList.add("inventory");
+        bgRight.appendChild(menu);
+        for (let i = 0; i < player.inventory.length; i++) {
+            let available = document.createElement("input");
+            available.setAttribute("type","image");
+            available.setAttribute("src",player.inventory[i].sprite);
+            available.style.width = "30px";
+            available.addEventListener('click',() => {menu.remove();resolve(player.inventory[i])});
+            menu.appendChild(available);
+        }
+    });
+}
+
+let useItem = () => {
+    return new Promise( async (resolve) => {
+        let chosenItem = await choseItem();
+        chosenItem.use(player,display2,logText)
         log.scrollTop = log.scrollHeight;
         setTimeout(() => {
             //monsterStats.innerHTML = `${monstre.name} <br> <span class="red">♥</span> ${monstre.hp} &nbsp; | &nbsp; <span class="gold">⚔</span> ${monstre.atk}`;
@@ -127,7 +141,7 @@ let useItem = async () => {
     });
 }
 
-let monsterAttack = async (monstre) => {
+let monsterAttack = (monstre) => {
     return new Promise( resolve => {
         monstre.attack(player,display1,display2,logText);
         log.scrollTop = log.scrollHeight;
@@ -143,7 +157,7 @@ let monsterAttack = async (monstre) => {
     });
 }
 
-let monsterDeath = async (monstre) => {
+let monsterDeath = (monstre) => {
     return new Promise( resolve => {
         display1.style.filter= "saturate(50%)";
         setTimeout(() => {
@@ -172,7 +186,7 @@ let playerDeath = async (monstre) => {
                 display2.innerHTML = '<img src="./public/img/joueur/Felix_lBlade_DownedBack.gif" alt="hero"  class="w-100">';
                 logText.innerHTML += `<br>Vous avez été défait par ${monstre.name} !`
                 log.scrollTop = log.scrollHeight;
-                await continuer(2)
+                await continuer(2);
                 buttons[2].innerHTML = "Attaque";
                 for (let i = 3; i < buttons.length; i++) {
                     buttons[i].style.display = "inline-block";
@@ -223,7 +237,7 @@ let fight = async (monstre,init) => {
     if (monstre.hp <= 0 || player.hp <= 0) {
         if(monstre.hp <= 0){
             await monsterDeath(monstre);
-            item1.drop(player,display1,logText);
+            itemPool[parseInt(Math.random())].drop(player,display1,logText);
         } else {
             await playerDeath(monstre);
         }
@@ -241,6 +255,10 @@ let initiative = async (monstre) => {
     return new Promise(resolve => {
         if (monstre.name == "Mimic") {
             logText.innerHTML += `<br>Le coffre était en fait une <span class="name">${monstre.name}</span> !`
+        } else if (monstre.type == "boss") {
+            logText.innerHTML += `<br>Vous appercevez la sortie du donjon !`
+            log.scrollTop = log.scrollHeight;
+            logText.innerHTML += `<br>Cependant un <span class="bossName">${monstre.name}</span> se dresse en travers de votre chemin !`
         } else {
             logText.innerHTML += `<br>Vous rencontrez un <span class="name">${monstre.name}</span> !`
         }
