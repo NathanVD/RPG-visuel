@@ -20,9 +20,10 @@ Votre héro aura :
 */
 
 export class Hero extends Personnage {
-    constructor(nom,pv,pvMax,attaque,vitesse,img){
+    constructor(nom,pv,pvMax,attaque,vitesse,inventaire,img){
         super(nom,pv,attaque,vitesse,img);
         this.hpMax = pvMax;
+        this.inventory = inventaire;
     }
     //La méthode swordAttack() fera des dégâts au monstre du stage en fonction des dégâts du héro.
     swordAttack(cible,affichage,affichageCible,log){
@@ -61,7 +62,6 @@ export class Hero extends Personnage {
                 }, 225);
             }, 150);
         }, 225);
-
     }
 }
 

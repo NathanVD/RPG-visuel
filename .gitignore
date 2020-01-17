@@ -1,6 +1,5 @@
 node_modules/
 .vscode/
 test.js
-rpgTest.js
 rpgLoot.js
 rpgFight.js

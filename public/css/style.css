@@ -132,6 +132,10 @@ p {
   margin: 5px;
 }
 
+.w-25 {
+  width: 25%;
+}
+
 .w-50 {
   width: 50%;
 }
@@ -146,6 +150,16 @@ p {
 
 .name {
   color: #e523ff;
+}
+
+.bossName {
+  color: #8b0e0e;
+}
+
+.item {
+  position: relative;
+  top: 35%;
+  right: 10%;
 }
 
 #actionsA, #actionsB {

@@ -1,11 +1,12 @@
-import {Hero,Monstre} from "./modules/persos.js";
-import {Coffre} from "./modules/coffres.js";
+import {Hero,Monstre} from "../modules/persos.js";
+import {Coffre} from "../modules/coffres.js";
+import {Item} from "../modules/items.js";
 
 // VARIABLES {
 
-    let pick,room,action,init;
+    let pick,room,action,init,chosen;
     //1 héro
-    let player = new Hero("Pavel",100,100,10,10,'<img src="./public/img/joueur/Felix_lBlade_Front.gif" alt="hero"  class="w-100">');
+    let player = new Hero("Pavel",100,100,10,10,[],'<img src="./public/img/joueur/Felix_lBlade_Front.gif" alt="hero"  class="w-100">');
     //monstre
     let monster1 = new Monstre("monstre","Slime",10,3,0,'<img src="./public/img/monstres/Ooze.gif" alt="slime" class="w-50"></img>');
     let monster2 = new Monstre("monstre","Gnome",15,5,5,'<img src="./public/img/monstres/Gnome.gif" alt="gnome" class="w-50"></img>');
@@ -27,17 +28,26 @@ import {Coffre} from "./modules/coffres.js";
     let bossPool1 = [boss1,boss2,boss3];
     let boss = bossPool1[parseInt(Math.random()*bossPool1.length)];
     //3 coffres permettent d’améliorer les statistiques de votre héro
-    let chest1 = new Coffre("coffre","Épée de célérité",0,10,5,'<img src="./public/img/items/sword.png" alt="épée">');
-    let chest2 = new Coffre("coffre","Bottes de célérité",10,0,5,'<img src="./public/img/items/bottes.png" alt="bottes">');
-    let chest3 = new Coffre("coffre","Armure de célérité",20,0,5,'<img src="./public/img/items/armure.png" alt="armure">');
-    let chest4 = new Coffre("coffre","Anneau de perfection",10,10,10,'<img src="./public/img/items/anneau.png" alt="anneau">');
-    let chest5 = new Coffre("coffre","Casque de force",10,5,0,'<img src="./public/img/items/casque.png" alt="casque">');
+    let chest1 = new Coffre("coffre","Épée de célérité",0,10,5,'<img src="./public/img/relics/sword.png" class="w-50" alt="épée">');
+    let chest2 = new Coffre("coffre","Bottes de célérité",10,0,5,'<img src="./public/img/relics/bottes.png" class="w-50" alt="bottes">');
+    let chest3 = new Coffre("coffre","Armure de célérité",20,0,5,'<img src="./public/img/relics/armure.png" class="w-75" alt="armure">');
+    let chest4 = new Coffre("coffre","Anneau de perfection",10,10,10,'<img src="./public/img/relics/anneau.png" class="w-50" alt="anneau">');
+    let chest5 = new Coffre("coffre","Casque de force",10,5,0,'<img src="./public/img/relics/casque.png" class="w-50" alt="casque">');
     let treasurePool1 = [chest1,chest2,chest3,chest4,chest5];
+    //items
+    let item1 = new Item("objet","Potion",'<img src="./public/img/items/potion.gif" class="w-25" alt="potion">')
+    
+    //Inventaire de départ du joueur
+    for (let i = 0; i < 3; i++) {
+        player.inventory.push(item1);
+    }
+    console.log(player);
+    
     //Le donjooooooon !
     let dungeon = [monsterX];
     for (let i = 0; i < 5; i++) {
         pick = parseInt(Math.random()*monsterPool1.length);
-        dungeon.push(monsterPool1[pick]);  
+        dungeon.push(monsterPool1[pick]);
         monsterPool1.splice(pick,1);
     }
     for (let i = 0; i < parseInt(Math.random()*3+1); i++) {
@@ -45,9 +55,7 @@ import {Coffre} from "./modules/coffres.js";
         dungeon.push(treasurePool1[pick]);
         treasurePool1.splice(pick,1);
     }
-    
     console.log(dungeon);
-    
     let compteur = 0;
     //HTML
     let start = document.getElementById("start");
@@ -59,7 +67,8 @@ import {Coffre} from "./modules/coffres.js";
     // let attack = document.getElementById("action3");
     // let heal = document.getElementById("action4");
     // let item = document.getElementById("displayItem");
-    let buttons = document.getElementsByClassName("buttons");
+    let buttons = document.getElementsByClassName("button");
+    let relic = document.getElementById("displayItem");
     let bgLeft = document.getElementById("bg1");
     let display1 = document.getElementById("display1");
     let statsBox1 = document.getElementById("statsBox1");
@@ -99,13 +108,22 @@ let healSpell = async () => {
         log.scrollTop = log.scrollHeight;
         setTimeout(() => {
             heroStats.innerHTML = `${player.name} <br> <span class="red">♥</span> ${player.hp} / ${player.hpMax} &nbsp; | &nbsp; <span class="gold">⚔</span> ${player.atk}`;
-            setTimeout(() => {
-                log.scrollTop = log.scrollHeight;
-                setTimeout(() => {
-                    resolve();
-                }, 500);
-            }, 501);
-        }, 501);
+            log.scrollTop = log.scrollHeight;
+            resolve();
+        }, 1000);
+    });
+}
+
+let useItem = async () => {
+    return new Promise( resolve => {
+        item1.use(player,display2,logText)
+        log.scrollTop = log.scrollHeight;
+        setTimeout(() => {
+            //monsterStats.innerHTML = `${monstre.name} <br> <span class="red">♥</span> ${monstre.hp} &nbsp; | &nbsp; <span class="gold">⚔</span> ${monstre.atk}`;
+            heroStats.innerHTML = `${player.name} <br> <span class="red">♥</span> ${player.hp} / ${player.hpMax} &nbsp; | &nbsp; <span class="gold">⚔</span> ${player.atk}`;
+            log.scrollTop = log.scrollHeight;
+            resolve();
+        }, 1000);
     });
 }
 
@@ -149,11 +167,16 @@ let playerDeath = async (monstre) => {
         display2.innerHTML = '<img src="./public/img/joueur/Felix_lBlade_HitBack.gif" alt="hero"  class="w-100">';
         setTimeout(() => {
             display2.innerHTML = '<img src="./public/img/joueur/Felix_lBlade_DownedBack.gif" alt="hero"  class="w-100">';
-            setTimeout(() => {
+            setTimeout(async () => {
                 statsBox2.style.display = "none";
                 display2.innerHTML = '<img src="./public/img/joueur/Felix_lBlade_DownedBack.gif" alt="hero"  class="w-100">';
                 logText.innerHTML += `<br>Vous avez été défait par ${monstre.name} !`
                 log.scrollTop = log.scrollHeight;
+                await continuer(2)
+                buttons[2].innerHTML = "Attaque";
+                for (let i = 3; i < buttons.length; i++) {
+                    buttons[i].style.display = "inline-block";
+                }
                 resolve()
             }, 500);
         }, 500);
@@ -161,9 +184,7 @@ let playerDeath = async (monstre) => {
 }
 
 let fight = async (monstre,init) => {
-
     while (monstre.hp > 0 && player.hp > 0){
-
         //Monstre agit en premier
         if (init == "monstre") {
             //Action Monstre
@@ -171,22 +192,25 @@ let fight = async (monstre,init) => {
             //Action Joueur
             if (player.hp > 0) {
                 //Choix action
-                action = await choice(attack,heal);
-                if (action == 1){
+                action = await choice();
+                if (action == 3){
                     await swordAttack(monstre);
-                }else if(action == 2){
-                    await healSpell(monstre);
+                }else if(action == 4){
+                    await healSpell();
+                }else if (action == 5) {
+                    await useItem();
                 }
             }
-
         //Joueur agit en premier
         } else {
             //Action Joueur
-            action = await choice(attack,heal);
-            if (action == 1){
+            action = await choice();
+            if (action == 3){
                 await swordAttack(monstre);
-            }else if(action == 2){
-                await healSpell(monstre);
+            }else if(action == 4){
+                await healSpell();
+            }else if (action == 5) {
+                await useItem();
             }
             //Action Monstre
             if (monstre.hp > 0) {
@@ -196,10 +220,20 @@ let fight = async (monstre,init) => {
         action = 0;
     } 
     //Anim morts
-    if(monstre.hp <= 0){
-        await monsterDeath(monstre);
-    } else if(player.hp <= 0) {
-        await playerDeath(monstre);
+    if (monstre.hp <= 0 || player.hp <= 0) {
+        if(monstre.hp <= 0){
+            await monsterDeath(monstre);
+            item1.drop(player,display1,logText);
+        } else {
+            await playerDeath(monstre);
+        }
+        log.scrollTop = log.scrollHeight;
+        await continuer(2)
+        display1.innerHTML = "";
+        buttons[2].innerHTML = "Attaque";
+        for (let i = 3; i < buttons.length; i++) {
+            buttons[i].style.display = "inline-block";
+        }
     }
 }
 
@@ -293,16 +327,18 @@ let openMimic = () => {
 
 let openChest = (trésor) => {
     return new Promise(resolve => {
-        display1.innerHTML = '<img src="./public/img/items/openChest.png" alt="open chest" style="width:100px">';
-        item.innerHTML = trésor.sprite;
+        display1.innerHTML = '<img src="./public/img/relics/openChest.png" alt="open chest" style="width:100px">';
+        relic.innerHTML = trésor.sprite;
         logText.innerHTML += `<br>Le coffre contenait un(e) <span class="name">${trésor.name}</span> que vous équipez.`
         log.scrollTop = log.scrollHeight;
         trésor.equip(player,statsBox2,heroStats);
-        setTimeout(() => {
-            action1.removeAttribute("disabled");
-            action1.innerHTML = "Continuer";
-            action2.style.display = "none";
-            action1.addEventListener("click", ()=>resolve());
+        setTimeout(async () => {
+            await continuer(0)
+            buttons[0].innerHTML = "Ouvrir";
+            for (let i = 1; i < buttons.length; i++) {
+                buttons[i].style.display = "inline-block";
+            }
+            resolve()
         }, 500);
     });
 }
@@ -311,7 +347,7 @@ let loot = (trésor) => {
     return new Promise(async resolve => {
         logText.innerHTML += "<br>Vous avez trouvé un coffre ! Ouvrez le pour voir ce qu'il y a dedans !";
         log.scrollTop = log.scrollHeight;
-        action = await choice(open,ignore);
+        action = await choice();
         if (action == 1){
             if (trésor.name == "Mimic") {
                 await openMimic();
@@ -320,8 +356,6 @@ let loot = (trésor) => {
                 await openChest(trésor);
                 bgRight.style.justifyContent = "flex-end";
                 chestActions.style.visibility = "hidden";
-                action1.innerHTML = "Ouvrir";
-                action2.style.display = "inline-block";
             }
         } else if(action == 2){
             logText.innerHTML += "<br>Vous passez votre chemin sans ouvrir le coffre. Une décision courageuse."
@@ -330,7 +364,7 @@ let loot = (trésor) => {
         bgLeft.style.background = "darkblue";
         bgRight.style.background = "darkblue";
         display1.innerHTML = '';
-        item.innerHTML = "";
+        relic.innerHTML = "";
         resolve()
     });
 }
@@ -341,7 +375,7 @@ let chests = async () => {
             bgLeft.style.background = "url(/public/img/backgrounds/anemos3.png)";
             bgLeft.style.backgroundSize = "cover";
             setTimeout(() => {
-                display1.innerHTML = '<img src="./public/img/items/chest.png" alt="chest" style="width:100px">';
+                display1.innerHTML = '<img src="./public/img/relics/chest.png" alt="chest" style="width:100px">';
                 setTimeout(async () => {
                     chestActions.style.visibility = "visible";
                     await loot(room);
@@ -356,31 +390,32 @@ let chests = async () => {
 
 //Fonctions GÉNÉRALES
 
-let choice = (action1,action2,action3) => {
+let chosenButton = () => {
+    for (let j = 0; j < buttons.length; j++) {
+        buttons[j].setAttribute("disabled","disabled");
+    }
+    return event.currentTarget.value;
+}
+
+let choice = () => {
     return new Promise(resolve => {
-        action1.removeAttribute("disabled");
-        action2.removeAttribute("disabled");
-        action3.removeAttribute("disabled");
-        action1.addEventListener("click", () => {
-            action1.setAttribute("disabled","disabled");
-            action2.setAttribute("disabled","disabled");
-            action3.setAttribute("disabled","disabled");
-            resolve(1);
-        });
-        action2.addEventListener("click", () => {
-            action1.setAttribute("disabled","disabled");
-            action2.setAttribute("disabled","disabled");
-            action3.setAttribute("disabled","disabled");
-            resolve(2);
-        });
-        action3.addEventListener("click", () => {
-            action1.setAttribute("disabled","disabled");
-            action2.setAttribute("disabled","disabled");
-            action3.setAttribute("disabled","disabled");
-            resolve(3);
-        });
+        for (let i = 0; i < buttons.length; i++) {
+            buttons[i].removeAttribute("disabled");
+            buttons[i].addEventListener("click", () =>{resolve(chosenButton())});
+        }
     });
 }
+
+let continuer = (x) => {
+    return new Promise(resolve => {
+        buttons[x].removeAttribute("disabled");
+        buttons[x].innerHTML = "Continuer";
+        for (let i = x+1; i < buttons.length; i++) {
+            buttons[i].style.display = "none";
+        }
+        buttons[x].addEventListener("click", ()=>resolve());
+    });
+};
 
 let select = (donjon) => {
     let selector = donjon.splice(parseInt(Math.random()*donjon.length),1);
