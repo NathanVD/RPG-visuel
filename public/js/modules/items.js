@@ -4,16 +4,17 @@ Ces items ont une chance de drop après un combat contre un monstre.
 */
 
 export class Item {
-    constructor(type,nom,img){
+    constructor(type,nom,dropChance,img){
         this.type = type;
         this.name = nom;
+        this.droprate = dropChance;
         this.sprite = img;
     }
     drop(cible,affichage,log){
         let droprate = Math.random();
-        if (droprate < 0.33) { // Une chance sur 3 de drop l'item
+        if (droprate < this.droprate) {
             cible.inventory.push(this);
-            affichage.innerHTML = `<img src=${this.sprite} alt="potion">`;
+            affichage.innerHTML = `<img src=${this.sprite} alt="item">`;
             log.innerHTML += `<br>Vous trouvez un(e) <span class="name">${this.name}</span>`;
         }
     }

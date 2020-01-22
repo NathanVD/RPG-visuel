@@ -1,6 +1,6 @@
-import {Hero,Monstre} from "../modules/persos.js";
-import {Coffre} from "../modules/coffres.js";
-import {Item} from "../modules/items.js";
+import {Hero,Monstre} from "./modules/persos.js";
+import {Coffre} from "./modules/coffres.js";
+import {Item} from "./modules/items.js";
 
 // VARIABLES {
 
@@ -24,7 +24,7 @@ import {Item} from "../modules/items.js";
     //boss
     let boss1 = new Monstre("boss","Manticore",100,25,25,'<img src="./public/img/monstres/boss/Manticore.gif" alt="manticore" class="w-100"></img>');
     let boss2 = new Monstre("boss","Hydra",75,30,15,'<img src="./public/img/monstres/boss/Hydra.gif" alt="hydra" class="w-100"></img>');
-    let boss3 = new Monstre("boss","Cruel Dragon",150,20,10,'<img src="./public/img/monstres/boss/Cruel_Dragon.gif" alt="poseidon" class="w-150"></img>');
+    let boss3 = new Monstre("boss","Cruel Dragon",150,20,10,'<img src="./public/img/monstres/boss/Cruel_Dragon.gif" alt="poseidon" class="w-100"></img>');
     let bossPool1 = [boss1,boss2,boss3];
     let boss = bossPool1[parseInt(Math.random()*bossPool1.length)];
     //3 coffres permettent d’améliorer les statistiques de votre héro
